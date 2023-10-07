@@ -1,4 +1,4 @@
--- vim.g
+-- vim.g ----------------------------------------------------------------------
 local g = vim.g
 
 g.loaded_netrw = 1
@@ -30,7 +30,7 @@ if g.neovide == true then
     g.neovide_transparency = 0.99
 end
 
--- vim.opt
+-- vim.opt --------------------------------------------------------------------
 local o = vim.opt
 
 -- o.autochdir = true
@@ -56,13 +56,13 @@ o.fileencoding = 'utf-8'
 o.fileformats = 'unix,dos'
 -- o.fillchars = { vert = '│', horiz = '─', eob = ' ' }
 o.fillchars = {
-  foldopen = "",
-  foldclose = "",
-  -- fold = "⸱",
-  fold = " ",
-  foldsep = " ",
-  diff = "╱",
-  eob = " ",
+  foldopen = '',
+  foldclose = '',
+  -- fold = '⸱',
+  fold = ' ',
+  foldsep = ' ',
+  diff = '╱',
+  eob = ' ',
 }
 o.formatoptions = 'jcroqlnt'
 
@@ -95,12 +95,12 @@ o.previewheight = 5
 -- o.relativenumber = true
 
 o.scrolloff = 7
----- o.shada = [['20,<50,s10,h,/100]]
+-- o.shada = [['20,<50,s10,h,/100]]
 o.shiftwidth = 4
-o.shortmess:append "c"
----- o.showmatch = true
----- o.showmode = false
-o.signcolumn = "yes"
+o.shortmess:append 'c'
+-- o.showmatch = true
+-- o.showmode = false
+o.signcolumn = 'yes'
 -- o.smartcase = true
 -- o.smartindent = true
 -- o.softtabstop = 0
@@ -116,7 +116,7 @@ o.timeoutlen = 200
 -- o.undofile = true
 -- o.updatetime = 100
 
-o.wildignore = { "*.o", "*~", "*.pyc" }
-o.whichwrap:append "<,>"
-o.wildmode = "longest:full,full"
+o.wildignore = { '*.o', '*~', '*.pyc' }
+o.whichwrap:append '<,>'
+o.wildmode = 'longest:full,full'
 

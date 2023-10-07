@@ -4,13 +4,18 @@ M.load = function(plugins_list)
     local utils = require "plugins.lazy.utils"
     local _ = utils.check_bootstrap()
 
+    local plugins_options_list = require'plugins.lazy.plugins_options_list'
+
     local plugins = {}
     for _, plugin_name in ipairs(plugins_list) do
-        local plugin_options = require("plugins.lazy." .. plugin_name)
+        local plugin_options = plugins_options_list[plugin_name]
+        if plugin_options == nil then
+            error('There is no options for "' .. plugin_name .. '"')
+        end
         table.insert(plugins, plugin_options)
     end
 
-    local options = {
+    utils.setup('lazy', plugins, {
         checker = { enable = true },
         performance = {
             rtp = {
@@ -55,9 +60,7 @@ M.load = function(plugins_list)
               not_loaded = "",
             },
         },
-    }
-
-    utils.setup('lazy', plugins, options)
+    })
 
     vim.keymap.set(
         "n",

@@ -1,3 +1,0 @@
-return {
-  'onsails/diaglist.nvim',
-}
