@@ -1,13 +1,12 @@
 require('plugins.lazy').load {
 -- themes ---------------------------------------------------------------------
-    -- 'ntk148v/nabamax.nvim',
-    'daschw/leaf.nvim',
-    -- 'rose-pine/neovim',
-    -- 'rebelot/kanagawa.nvim',
-    -- 'navarasu/onedark.nvim',
-    -- 'lukas-reineke/onedark.nvim',
     -- 'sainnhe/edge',
+    -- 'ntk148v/habamax.nvim',
+    -- 'rebelot/kanagawa.nvim',
+    -- 'daschw/leaf.nvim',
+    'marko-cerovac/material.nvim',
     -- 'Th3Whit3Wolf/one-nvim',
+    -- 'glepnir/porcelain.nvim',
 
 -- main -----------------------------------------------------------------------
     'nvim-lua/plenary.nvim',
@@ -16,17 +15,22 @@ require('plugins.lazy').load {
 
 -- code highlight -------------------------------------------------------------
     'nvim-treesitter/nvim-treesitter',
+    -- 'nvim-treesitter/nvim-treesitter-context',
+    'code-biscuits/nvim-biscuits',
 
 -- lsp ------------------------------------------------------------------------
-    -- 'VonHeikemen/lsp-zero.nvim',
     'neovim/nvim-lspconfig',
     'williamboman/mason.nvim',
+    'williamboman/mason-lspconfig.nvim',
     'https://git.sr.ht/~p00f/clangd_extensions.nvim',
     'simrat39/rust-tools.nvim',
     'NTBBloodbath/zig-tools.nvim',
     'ray-x/go.nvim',
-    -- 'jose-elias-alvarez/null-ls.nvim',
-    -- 'glepnir/lspsaga.nvim',
+
+-- dap ------------------------------------------------------------------------
+    'mfussenegger/nvim-dap',
+    'rcarriga/nvim-dap-ui',
+    'theHamsta/nvim-dap-virtual-text',
 
 -- autocomletion --------------------------------------------------------------
     'hrsh7th/nvim-cmp',
@@ -40,26 +44,21 @@ require('plugins.lazy').load {
 
 -- edit -----------------------------------------------------------------------
     'jbyuki/venn.nvim',
-    -- 'windwp/nvim-autopairs',
-    -- 'numToStr/Comment.nvim',
-    -- 'daymat/neogen',
+    'windwp/nvim-autopairs',
+    'numToStr/Comment.nvim',
 
--- code navigation -----------------------------------------------------------------
+-- code navigation ------------------------------------------------------------
     'karb94/neoscroll.nvim',
     'SmiteshP/nvim-navic',
+    'utilyre/barbecue.nvim',
+    'romgrk/barbar.nvim',
     'nacro90/numb.nvim',
 
 -- ui -------------------------------------------------------------------------
-    -- 'kyazdani42/nvim-web-devicons',
     -- 'lukas-reineke/indent-blankline.nvim',
 
-    -- 'nvim-lualine/lualine.nvim',
-    -- 'feline-nvim/feline.nvim',
-
-    -- 'utilyre/barbecue.nvim',
     'j-hui/fidget.nvim',
     'b0o/incline.nvim',
-    -- 's1n7ax/nvim-window-picker',
     'nvim-tree/nvim-tree.lua',
     -- 'nvchad/nvim-colorizer.lua',
     'leath-dub/stat.nvim',
@@ -67,5 +66,5 @@ require('plugins.lazy').load {
     'akinsho/toggleterm.nvim',
     'lukas-reineke/virt-column.nvim',
     'folke/which-key.nvim',
-    -- 'onsails/diaglist.nvim',
+    'onsails/diaglist.nvim',
 }

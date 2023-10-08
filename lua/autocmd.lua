@@ -4,13 +4,13 @@ local function augroup(name)
   return vim.api.nvim_create_augroup(name, { clear = true })
 end
 
---autocmd('BufEnter', {
---    callback = function ()
---        vim.api.nvim_set_current_dir(require('utils').get_root())
---    end,
---    group = augroup'ChangeCwd',
---    pattern = '*'
---})
+autocmd('BufEnter', {
+   callback = function ()
+       vim.api.nvim_set_current_dir(require('utils').get_root())
+   end,
+   group = augroup'ChangeCwd',
+   pattern = '*'
+})
 
 -- Check if we need to reload the file when it changed
 autocmd({ 'FocusGained', 'TermClose', 'TermLeave' }, {

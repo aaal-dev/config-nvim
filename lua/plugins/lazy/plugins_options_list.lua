@@ -1,15 +1,55 @@
 local utils = require 'plugins.lazy.utils'
 
 return {
+    ['romgrk/barbar.nvim'] = {
+        'romgrk/barbar.nvim',
+        dependencies = {
+          'lewis6991/gitsigns.nvim', -- OPTIONAL: for git status
+          'nvim-tree/nvim-web-devicons', -- OPTIONAL: for file icons
+        },
+        init = function()
+            vim.g.barbar_auto_setup = false
+        end,
+        opts = {
+            -- lazy.nvim will automatically call setup for you. put your
+            -- options here, anything missing will use the default:
+            -- animation = true,
+            -- insert_at_start = true,
+            -- …etc.
+        },
+        version = '^1.0.0', -- optional: only update when a new 1.x version is released
+    },
     ['utilyre/barbecue.nvim'] = {
         'utilyre/barbecue.nvim',
         name = 'barbecue',
         version = '*',
         dependencies = {
             'SmiteshP/nvim-navic',
-            'kyazdani42/nvim-web-devicons', -- optional dependency
+            'nvim-tree/nvim-web-devicons', -- optional dependency
         },
-        config = true,
+        opts = {
+            attach_navic = false,
+            create_autocmd = false,
+            show_basename = false,
+            show_dirname = false,
+        },
+        config = function (_, opts)
+            require('barbecue').setup(opts)
+
+            vim.api.nvim_create_autocmd({
+                "WinResized",
+                "BufWinEnter",
+                'CursorMoved',
+
+              -- include this if you have set `show_modified` to `true`
+              -- "BufModifiedSet",
+            }, {
+              group = vim.api.nvim_create_augroup("barbecue.updater", {}),
+              callback = function()
+                require("barbecue.ui").update()
+              end,
+            })
+        end,
     },
     ['https://git.sr.ht/~p00f/clangd_extensions.nvim'] = {
         'https://git.sr.ht/~p00f/clangd_extensions.nvim',
@@ -23,6 +63,17 @@ return {
     },
     ['onsails/diaglist.nvim'] = {
       'onsails/diaglist.nvim',
+    },
+    ['sainnhe/edge'] = {
+        'sainnhe/edge',
+        lazy = false,
+        priority = 1000,
+        config = function(_, _)
+            vim.g.edge_style = 'default'
+            vim.g.edge_better_performance = 1
+            vim.cmd('colorscheme edge')
+            vim.cmd('TSEnable highlight')
+        end,
     },
     ['j-hui/fidget.nvim'] = {
         'j-hui/fidget.nvim',
@@ -140,18 +191,156 @@ return {
             })
         end,
     },
+    ['https://sr.ht/~p00f/godbolt.nvim/'] = {
+        'https://sr.ht/~p00f/godbolt.nvim/',
+        config = true,
+    },
     ['ntk148v/habamax.nvim'] = {
-      'ntk148v/habamax.nvim',
-      dependencies = {
-        'rktjmp/lush.nvim',
-      },
+        'ntk148v/habamax.nvim',
+        dependencies = {
+            'rktjmp/lush.nvim',
+        },
+        lazy = false,
+        priority = 1000,
+        config = function()
+            vim.cmd('colorscheme habamax.nvim')
+        end,
     },
     ['lewis6991/impatient.nvim'] = {
         'lewis6991/impatient.nvim',
     },
     ['b0o/incline.nvim'] = {
         'b0o/incline.nvim',
-        opts = {},
+        opts = {
+            debounce_threshold = {
+                falling = 50,
+                rising = 10,
+            },
+            highlight = {
+                groups = {
+                    InclineNormal = {
+                        default = true,
+                        group = "NormalFloat",
+                    },
+                    InclineNormalNC = {
+                        default = true,
+                        group = "NormalFloat",
+                    },
+                },
+            },
+            ignore = {
+                buftypes = "special",
+                filetypes = {},
+                floating_wins = true,
+                unlisted_buffers = true,
+                wintypes = "special",
+            },
+            render = function(props)
+                local filename = vim.fn.fnamemodify(
+                    vim.api.nvim_buf_get_name(props.buf),
+                    ':t'
+                )
+
+                local modified = vim.api.nvim_get_option_value(
+                    'modified',
+                    { buf = props.buf, }
+                )
+
+                if modified then
+                    filename = ' ' .. filename
+                end
+
+                if props.focused == true then
+                    return {
+                        {
+                            ' '..filename..' ',
+                            guibg = '#282828',
+                            guifg = '#a0a0a0',
+                        }
+                    }
+                else
+                    return {
+                        {
+                            ' '..filename..' ',
+                            guibg = '#282828',
+                            guifg = '#a0a0a0',
+                        }
+                    }
+                end
+            end,
+            window = {
+                margin = {
+                    horizontal = 1,
+                    vertical = 2,
+                },
+                options = {
+                    signcolumn = "no",
+                    wrap = false,
+                },
+                padding = 0,
+                padding_char = " ",
+                placement = {
+                    horizontal = "right",
+                    vertical = "top"
+                },
+                width = "fit",
+                winhighlight = {
+                    active = {
+                        EndOfBuffer = "None",
+                        Normal = "InclineNormal",
+                        Search = "None",
+                    },
+                    inactive = {
+                        EndOfBuffer = "None",
+                        Normal = "InclineNormalNC",
+                        Search = "None",
+                    },
+                },
+                zindex = 50,
+            },
+        },
+    },
+    ['lukas-reineke/indent-blankline.nvim'] = {
+        'lukas-reineke/indent-blankline.nvim',
+        opts = {
+            char = "",
+            char_highlight_list = {
+                "IndentBlanklineIndent1",
+                "IndentBlanklineIndent2",
+            },
+            space_char_highlight_list = {
+                "IndentBlanklineIndent1",
+                "IndentBlanklineIndent2",
+            },
+            show_current_context = true,
+            show_current_context_start = true,
+            show_trailing_blankline_indent = false,
+            space_char_blankline = " ",
+        },
+        init = function ()
+            vim.cmd(
+                'highlight IndentBlanklineIndent1 guibg=#1f1f1f gui=nocombine'
+            )
+            vim.cmd(
+                'highlight IndentBlanklineIndent2 guibg=#1a1a1a gui=nocombine'
+            )
+        end,
+    },
+    ['rebelot/kanagawa.nvim'] = {
+        'rebelot/kanagawa.nvim',
+        lazy = false,
+        priority = 1000,
+        opts = {
+            background = {
+                dark = 'dragon',
+                light = 'lotus',
+            },
+            theme = 'dragon',
+        },
+        config = function(_, opts)
+            require("kanagawa").setup(opts)
+            vim.cmd("colorscheme kanagawa")
+        end,
     },
     ['daschw/leaf.nvim'] = {
         'daschw/leaf.nvim',
@@ -213,6 +402,15 @@ return {
         opts = {
             automatic_instalation = true,
         },
+    },
+    ['marko-cerovac/material.nvim'] = {
+        'marko-cerovac/material.nvim',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            vim.g.material_style = 'darker'
+            vim.cmd('colorscheme material')
+        end,
     },
     ['folke/neodev.nvim'] = {
       'folke/neodev.nvim',
@@ -282,6 +480,33 @@ return {
             centered_peeking = true,
         }
     },
+    ['windwp/nvim-autopairs'] = {
+        'windwp/nvim-autopairs',
+        opts = {
+            fast_wrap = {},
+            disable_filetype = { 'TelescopePrompt', 'vim' },
+        },
+        config = function (_, opts)
+            require('nvim-autopairs').setup(opts)
+
+            local ca = require 'nvim-autopairs.completion.cmp'
+            require('cmp').event:on('confirm_done', ca.on_confirm_done())
+        end
+    },
+    ['code-biscuits/nvim-biscuits'] = {
+        'code-biscuits/nvim-biscuits',
+        dependencies = { 'nvim-treesitter/nvim-treesitter' },
+        init = function ()
+            vim.cmd'highlight BiscuitColor ctermfg=DarkGray guifg=#474337'
+        end,
+        opts = {
+            default_config = {
+                min_distance = 5,
+                -- max_length = 12,
+                prefix_string ='<- ',
+            },
+        },
+    },
     ['hrsh7th/nvim-cmp'] = {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
@@ -336,29 +561,24 @@ return {
             { "hrsh7th/cmp-nvim-lsp-signature-help" },
             { "hrsh7th/cmp-nvim-lua" },
             { "hrsh7th/cmp-path" },
+            {
+                'paopaol/cmp-doxygen',
+                dependencies = {
+                  "nvim-treesitter/nvim-treesitter",
+                  "nvim-treesitter/nvim-treesitter-textobjects"
+                },
+            },
             { "ray-x/cmp-treesitter" },
             { "doxnit/cmp-luasnip-choice" },
             -- { "amarakon/nvim-cmp-buffer-lines" },
             -- { "amarakon/nvim-cmp-lua-latex-symbols" },
-            {
-                'windwp/nvim-autopairs',
-                opts = {
-                    fast_wrap = {},
-                    disable_filetype = { 'TelescopePrompt', 'vim' },
-                },
-                config = function (_, opts)
-                    require('nvim-autopairs').setup(opts)
-
-                    local ca = require 'nvim-autopairs.completion.cmp'
-                    require('cmp').event:on('confirm_done', ca.on_confirm_done())
-                end
-            },
+            { 'windwp/nvim-autopairs' },
         },
         opts = {
             formatting = {
                 fields = { 'abbr', 'menu', 'kind' },
                 format = function(_, item)
-                    local icon = lspkind_icons[item.kind]
+                    local icon = utils.lspkind_icons[item.kind]
                     if icon == nil then
                         icon = '  '
                     end
@@ -376,6 +596,7 @@ return {
                 -- { name = "buffer-lines" },
                 -- { name = "calc" },
                 -- { name = "lua-latex-symbols" },
+                { name = 'doxygen' },
                 { name = "luasnip" },
                 { name = "luasnip_choise" },
                 { name = "nvim_lua" },
@@ -500,6 +721,20 @@ return {
         dependencies = {
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
+            {
+                'SmiteshP/nvim-navbuddy',
+                 dependencies = {
+                    'SmiteshP/nvim-navic',
+                    'MunifTanjim/nui.nvim',
+                    'numToStr/Comment.nvim',        -- Optional
+                    'nvim-telescope/telescope.nvim' -- Optional
+                },
+                opts = {
+                    lsp = {
+                        auto_attach = true,
+                    },
+                },
+            },
         },
         opts = {
             capabilities = {
@@ -528,14 +763,17 @@ return {
                     },
                 },
             },
-        },
-        config = function (_, opts)
-            local servers = {
+            servers = {
                 ['clangd'] = {
-                    on_attach = function (_)
-                        local inlay_hints = require'clangd_extensions.inlay_hints'
+                    on_attach = function (client, bufnr)
+                        local inlay_hints = require(
+                            'clangd_extensions.inlay_hints'
+                        )
                         inlay_hints.setup_autocmd()
                         inlay_hints.set_inlay_hints()
+
+                        require('nvim-navic').attach(client, bufnr)
+                        require('nvim-navbuddy').attach(client, bufnr)
                     end,
                 },
                 ['cmake'] = {},
@@ -591,7 +829,8 @@ return {
                 ['rust_analyzer'] = {},
                 ['zls'] = {},
             }
-
+        },
+        config = function (_, opts)
             local has_cmp, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
             local capabilities = vim.tbl_deep_extend('force',
                 {},
@@ -601,7 +840,7 @@ return {
             )
 
             local lsp = require 'lspconfig'
-            for server, server_options in pairs(servers) do
+            for server, server_options in pairs(opts.servers) do
                 lsp[server].setup(vim.tbl_deep_extend('force',
                     { capabilities = vim.deepcopy(capabilities) },
                     server_options or {}
@@ -741,6 +980,10 @@ return {
     },
     ['nvim-treesitter/nvim-treesitter'] = {
         'nvim-treesitter/nvim-treesitter',
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter-refactor',
+            'nvim-treesitter/nvim-treesitter-textobjects',
+        },
         build = ':TSUpdate',
         cmd = {
             'TSInstall',
@@ -757,6 +1000,169 @@ return {
             sync_install = false,
             highlight = { enable = true },
             indent = { enable = true },
+            refactor = { -- nvim-treesitter-refactor module
+                highlight_current_scope = { enable = false },
+                highlight_definitions = {
+                    enable = true,
+                    -- Set to false if you have an `updatetime` of ~100.
+                    clear_on_cursor_move = true,
+                },
+                navigation = {
+                    enable = true,
+                    -- Assign keymaps to false to disable them,
+                    -- e.g. `goto_definition = false`.
+                    keymaps = {
+                        goto_definition = "gnd",
+                        list_definitions = "gnD",
+                        list_definitions_toc = "gO",
+                        goto_next_usage = "<a-*>",
+                        goto_previous_usage = "<a-#>",
+                    },
+                },
+                smart_rename = {
+                    enable = true,
+                    -- Assign keymaps to false to disable them,
+                    -- e.g. `smart_rename = false`.
+                    keymaps = {
+                        smart_rename = "grr",
+                    },
+                },
+            },
+            textobjects = { -- nvim-treesitter-textobjects module
+                lsp_interop = {
+                    enable = true,
+                    border = 'none',
+                    floating_preview_opts = {},
+                    peek_definition_code = {
+                        ["<leader>df"] = "@function.outer",
+                        ["<leader>dF"] = "@class.outer",
+                  },
+                },
+                move = {
+                    enable = true,
+                    set_jumps = true, -- whether to set jumps in the jumplist
+                    goto_next_start = {
+                        ["]m"] = "@function.outer",
+                        ["]]"] = {
+                            query = "@class.outer",
+                            desc = "Next class start"
+                        },
+
+                        -- You can use regex matching (i.e. lua pattern)
+                        -- and/or pass a list in a "query" key to group
+                        -- multiple queires.
+                        ["]o"] = "@loop.*",
+                        -- ["]o"] = { query = { "@loop.inner", "@loop.outer" } }
+
+                        -- You can pass a query group to use query from
+                        -- `queries/<lang>/<query_group>.scm file in your
+                        -- runtime path.
+                        -- Below example nvim-treesitter's `locals.scm` and
+                        -- `folds.scm`. They also provide highlights.scm and
+                        -- indent.scm.
+                        ["]s"] = {
+                            query = "@scope",
+                            query_group = "locals",
+                            desc = "Next scope"
+                        },
+                        ["]z"] = {
+                            query = "@fold",
+                            query_group = "folds",
+                            desc = "Next fold"
+                        },
+                    },
+                    goto_next_end = {
+                        ["]M"] = "@function.outer",
+                        ["]["] = "@class.outer",
+                    },
+                    goto_previous_start = {
+                        ["[m"] = "@function.outer",
+                        ["[["] = "@class.outer",
+                    },
+                    goto_previous_end = {
+                        ["[M"] = "@function.outer",
+                        ["[]"] = "@class.outer",
+                    },
+                    -- Below will go to either the start or the end, whichever
+                    -- is closer.
+                    -- Use if you want more granular movements
+                    -- Make it even more gradual by adding multiple queries
+                    -- and regex.
+                    goto_next = {
+                        ["]d"] = "@conditional.outer",
+                    },
+                    goto_previous = {
+                        ["[d"] = "@conditional.outer",
+                    }
+                },
+                select = {
+                    enable = true,
+
+                    -- Automatically jump forward to textobj, similar
+                    -- to targets.vim
+                    lookahead = true,
+
+                    keymaps = {
+                        -- You can use the capture groups defined
+                        -- in textobjects.scm
+                        ["af"] = "@function.outer",
+                        ["if"] = "@function.inner",
+                        ["ac"] = "@class.outer",
+
+                        -- You can optionally set descriptions to the mappings
+                        -- (used in the desc parameter of nvim_buf_set_keymap)
+                        -- which plugins like which-key display
+                        ["ic"] = {
+                            query = "@class.inner",
+                            desc = "Select inner part of a class region"
+                        },
+
+                        -- You can also use captures from other query groups
+                        -- like `locals.scm`
+                        ["as"] = {
+                            query = "@scope",
+                            query_group = "locals",
+                            desc = "Select language scope"
+                        },
+                    },
+
+                    -- You can choose the select mode (default is charwise 'v')
+                    --
+                    -- Can also be a function which gets passed a table with
+                    -- the keys
+                    -- * query_string: eg '@function.inner'
+                    -- * method: eg 'v' or 'o'
+                    -- and should return the mode ('v', 'V', or '<c-v>')
+                    -- or a table mapping query_strings to modes.
+                    selection_modes = {
+                        ['@parameter.outer'] = 'v', -- charwise
+                        ['@function.outer'] = 'V', -- linewise
+                        ['@class.outer'] = '<c-v>', -- blockwise
+                    },
+
+                    -- If you set this to `true` (default is `false`) then any
+                    -- textobject is extended to include preceding or
+                    -- succeeding whitespace. Succeeding whitespace has
+                    -- priority in order to act similarly to eg the built-in
+                    -- `ap`.
+                    --
+                    -- Can also be a function which gets passed a table with
+                    -- the keys
+                    -- * query_string: eg '@function.inner'
+                    -- * selection_mode: eg 'v'
+                    -- and should return true of false
+                    include_surrounding_whitespace = true,
+                },
+                swap = {
+                    enable = true,
+                    swap_next = {
+                        ["<leader>a"] = "@parameter.inner",
+                    },
+                    swap_previous = {
+                        ["<leader>A"] = "@parameter.inner",
+                    },
+                },
+            },
         },
         config = function(_, opts)
             require('nvim-treesitter.configs').setup(opts)
@@ -767,8 +1173,24 @@ return {
         dependencies = { 'nvim-treesitter/nvim-treesitter' },
         config = true,
     },
+    ['Th3Whit3Wolf/one-nvim'] = {
+        'Th3Whit3Wolf/one-nvim',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            vim.cmd('colorscheme one-nvim')
+        end,
+    },
     ['nvim-lua/plenary.nvim'] = {
       'nvim-lua/plenary.nvim',
+    },
+    ['glepnir/porcelain.nvim'] = {
+        'glepnir/porcelain.nvim',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            vim.cmd([[colorscheme porcelain]])
+        end,
     },
     ['simrat39/rust-tools.nvim'] = {
         "simrat39/rust-tools.nvim",
@@ -853,6 +1275,81 @@ return {
                 },
             })
         end,
+    },
+    ['nvim-telescope/telescope.nvim'] = {
+        'nvim-telescope/telescope.nvim',
+        version = false,
+        cmd = "Telescope",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "tsakirist/telescope-lazy.nvim",
+        },
+        opts = {
+            defaults = {
+                vimgrep_arguments = {
+                    "rg",
+                    "-L",
+                    "--color=never",
+                    "--no-heading",
+                    "--with-filename",
+                    "--line-number",
+                    "--column",
+                    "--smart-case",
+                },
+                prompt_prefix = "   ",
+                selection_caret = "  ",
+                entry_prefix = "  ",
+                initial_mode = "insert",
+                selection_strategy = "reset",
+                sorting_strategy = "ascending",
+                layout_strategy = "horizontal",
+                layout_config = {
+                    horizontal = {
+                        prompt_position = "top",
+                        preview_width = 0.55,
+                        results_width = 0.8,
+                    },
+                    vertical = {
+                        mirror = false,
+                    },
+                    width = 0.87,
+                    height = 0.80,
+                    preview_cutoff = 120,
+                },
+                file_ignore_patterns = { "node_modules" },
+                path_display = { "truncate" },
+                winblend = 0,
+                border = {},
+                borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+                color_devicons = true,
+                set_env = { ["COLORTERM"] = "truecolor" }, -- default = nil,
+
+                mappings = {
+                    n = {
+                        ["q"] = function()
+                            require("telescope.actions").close()
+                        end,
+                    },
+                    i = {
+                        ["<c-t>"] = function(...)
+                            return require("trouble.providers.telescope").open_with_trouble(...)
+                        end,
+                        ["<a-i>"] = function()
+                            Util.telescope("find_files", { no_ignore = true })()
+                        end,
+                        ["<a-h>"] = function()
+                            Util.telescope("find_files", { hidden = true })()
+                        end,
+                        ["<C-Down>"] = function(...)
+                            return require("telescope.actions").cycle_history_next(...)
+                        end,
+                        ["<C-Up>"] = function(...)
+                            return require("telescope.actions").cycle_history_prev(...)
+                        end,
+                    },
+                },
+            },
+        },
     },
     ['folke/todo-comments.nvim'] = {
         "folke/todo-comments.nvim",
