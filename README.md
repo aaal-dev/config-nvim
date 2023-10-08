@@ -3,7 +3,7 @@ My personal neovim config
 Wait for some polishing  
 How it looks for now
 
-![Snapshot_2023-10-07_03-05-55](https://github.com/aaal-dev/nvim/assets/11665734/ed922776-f674-4a52-a43d-2cc5823b0c1c)
+![Snapshot_2023-10-08_22-25-34](https://github.com/aaal-dev/nvim/assets/11665734/cd9d00e5-e7a7-42b6-94cd-66a7997a435b)
 
 ## Plugins
 
